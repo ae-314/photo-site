@@ -1,6 +1,11 @@
-/** @type {import('next').NextConfig} */
+// next.config.mjs
+const isVercel = !!process.env.VERCEL;
+
 const nextConfig = {
-  output: 'export',              // build static files into /out
-  images: { unoptimized: true }, // no server-side image optimizer
+  images: isVercel
+    ? { formats: ["image/avif", "image/webp"] } // Vercel optimizer ON
+    : { unoptimized: true },                    // Cloudflare safe
+  ...(isVercel ? {} : { output: "export" }),    // keep static export only off Vercel
 };
+
 export default nextConfig;
