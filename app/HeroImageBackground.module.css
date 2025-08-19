@@ -1,7 +1,7 @@
 .wrapper {
   position: relative;
   height: 100dvh;                 /* full viewport */
-  background-image: url('/hero.AVIF'); /* keep your hero here */
+  background-image: url('/hero.avif'); /* keep your hero here */
   background-size:cover;
   background-position: center;
   background-repeat: no-repeat;
