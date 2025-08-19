@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useDisclosure, useMediaQuery, useWindowScroll } from "@mantine/hooks";
+import { usePathname } from "next/navigation";
 import { Container, Group, Burger, Stack, Divider, Portal, CloseButton } from "@mantine/core";
 
 const colors = {
@@ -15,6 +16,9 @@ const colors = {
 };
 
 export default function HeaderNav() {
+  const pathname = usePathname();
+  const isHome = pathname === "/";
+
   const [opened, { toggle, close }] = useDisclosure(false);
   const largerThanSm = useMediaQuery("(min-width: 48em)");
   const [{ y }] = useWindowScroll();
@@ -36,10 +40,12 @@ export default function HeaderNav() {
 
   const [hoverKey, setHoverKey] = useState(null);
 
+  const navOnLight = isHome ? scrolled : true; // light text only on home before scroll
+
   const brandStyle = {
     textDecoration: "none",
-    color: scrolled ? colors.ink : "#fff",
-    fontWeight: 400, // keep your current weight
+    color: navOnLight ? colors.ink : "#fff",
+    fontWeight: 400,
     fontSize: "clamp(1.4rem, 2.6vw, 2rem)", // 2× body max
     lineHeight: 1.1,
     fontFamily: 'var(--font-main), Georgia, "Times New Roman", Times, serif',
@@ -52,10 +58,10 @@ export default function HeaderNav() {
       style={{
         textDecoration: "none",
         fontWeight: 400,
-        color: scrolled ? colors.ink : "#fff",
+        color: navOnLight ? colors.ink : "#fff",
         fontSize: "clamp(1.05rem, 2.2vw, 1.25rem)",
         transition: "color 120ms ease",
-        fontFamily: 'var(--font-main), Georgia, "Times New Roman", Times, serif', // ensure same font
+        fontFamily: 'var(--font-main), Georgia, "Times New Roman", Times, serif',
       }}
     >
       {label}
@@ -80,7 +86,7 @@ export default function HeaderNav() {
         background: hoverKey === key ? colors.hoverBg : "transparent",
         transition: "background 120ms ease",
         fontSize: big ? "clamp(24px, 3.2vw, 36px)" : "clamp(18px, 2.4vw, 28px)",
-        fontFamily: 'var(--font-main), Georgia, "Times New Roman", Times, serif', // ensure same font
+        fontFamily: 'var(--font-main), Georgia, "Times New Roman", Times, serif',
       }}
     >
       {label}
@@ -93,18 +99,19 @@ export default function HeaderNav() {
         position: "fixed",
         top: 0, left: 0, right: 0,
         zIndex: 100,
-        background: scrolled ? colors.headerGlass : "transparent",
-        backdropFilter: scrolled ? "saturate(140%) blur(10px)" : "none",
-        WebkitBackdropFilter: scrolled ? "saturate(140%) blur(10px)" : "none",
-        borderBottom: scrolled ? `1px solid ${colors.border}` : "1px solid transparent",
-        boxShadow: scrolled ? "0 10px 28px rgba(0,0,0,0.12)" : "none",
+        background: isHome
+          ? (scrolled ? colors.headerGlass : "transparent")
+          : colors.panelGrad, // solid header on inner pages
+        backdropFilter: isHome && scrolled ? "saturate(140%) blur(10px)" : "none",
+        WebkitBackdropFilter: isHome && scrolled ? "saturate(140%) blur(10px)" : "none",
+        borderBottom: (isHome && !scrolled) ? "1px solid transparent" : `1px solid ${colors.border}`,
+        boxShadow: (isHome && !scrolled) ? "none" : "0 10px 28px rgba(0,0,0,0.12)",
         transition: "background-color 200ms ease, border-color 200ms ease, box-shadow 200ms ease, backdrop-filter 200ms ease",
         fontFamily: 'var(--font-main), Georgia, "Times New Roman", Times, serif',
       }}
     >
       <Container size="lg" style={{ padding: "36px 16px" }}>
         <Group justify="space-between" wrap="nowrap">
-          {/* Title link with two sizes, same font */}
           <Link href="/" style={brandStyle} aria-label="Home">
             <span style={{ display: "block" }}>LichtBlicke</span>
             <span style={{ display: "block", fontSize: "0.62em", fontWeight: 400 }}>
@@ -123,15 +130,13 @@ export default function HeaderNav() {
             aria-label="Toggle navigation"
             hiddenFrom="sm"
             size="sm"
-            color={scrolled ? colors.ink : "#fff"}
+            color={navOnLight ? colors.ink : "#fff"}
           />
         </Group>
       </Container>
 
-      {/* === FULL-PAGE BLUR OVERLAY + RIGHT-SIDE COLUMN (scrollable) === */}
       {opened && (
         <Portal>
-          {/* Blur the whole page (header + body) but keep it visible */}
           <div
             onClick={close}
             style={{
@@ -144,8 +149,6 @@ export default function HeaderNav() {
               overscrollBehavior: "contain",
             }}
           />
-
-          {/* Right column menu panel */}
           <div
             aria-label="Menu panel"
             onClick={(e) => e.stopPropagation()}

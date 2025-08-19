@@ -10,14 +10,22 @@ export default function HeroImageBackground() {
       {/* Keep overlay commented unless you want extra darkening on top of the vignette */}
       {/* <Overlay color="#000" opacity={0.15} zIndex={2} /> */}
 
-      <Image
-        src="/hero.avif"        // file must exist at /public/hero.avif
-        alt="Featured photograph"
-        fill
-        priority
-        sizes="100vw"
-        className={classes.heroImg}
-      />
+    <Image
+  src="/hero.avif"
+  alt="Featured photograph"
+  fill
+  priority
+  fetchPriority="high"
+  /* Cap max delivered width on large screens; smaller = fewer bytes */
+  sizes="(max-width: 480px) 100vw,
+         (max-width: 768px) 100vw,
+         (max-width: 1200px) 100vw,
+         1600px"
+  /* Lower quality to shrink file (try 60, then 50) */
+  quality={60}
+  className={classes.heroImg}
+/>
+
 
       <div className={classes.inner} />
     </div>
