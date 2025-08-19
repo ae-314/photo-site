@@ -1,0 +1,15 @@
+.wrapper {
+  position: relative;
+  height: 100dvh;                 /* full viewport */
+  background-image: url('/hero.jpg'); /* keep your hero here */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* no inner padding/content on the hero */
+.inner {
+  position: relative;
+  z-index: 2;
+  padding: 0;
+}
