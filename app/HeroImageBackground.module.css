@@ -33,4 +33,11 @@
   );
 }
 
+@media (orientation: portrait) {
+  .wrapper {
+    /* show more of the LEFT side; lower % = further left (0% = hard left) */
+    background-position: 15% 50%;
+  }
+}
+
 
