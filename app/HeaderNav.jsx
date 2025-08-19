@@ -6,14 +6,10 @@ import { useDisclosure, useMediaQuery, useWindowScroll } from "@mantine/hooks";
 import { Container, Group, Burger, Stack, Divider, Portal, CloseButton } from "@mantine/core";
 
 const colors = {
-  // Header “stained glass” when scrolled
-  headerGlass: "rgba(241, 248, 210, 0.13)", // #f1f8d2 @ 13%
-  // Overlay behind the panel: **transparent** so you SEE the page, but blurred
-  overlayTint: "rgba(245, 245, 245, 0.12)",
-  // Panel background: **light smoke grey gradient**
-  panelGrad: "linear-gradient(180deg, #cfcbcbaf 0%, #aeababa7 100%)",
+  headerGlass: "rgba(241, 248, 210, 0.13)", // your light tint on scroll
+  overlayTint: "rgba(245, 245, 245, 0.12)", // blur veil; page still visible
+  panelGrad: "linear-gradient(180deg, #f0f0f0 0%, #e6e6e6 100%)", // light smoke grey gradient
   ink: "#000000",
-  accent: "#D97014",
   border: "rgba(0,0,0,0.14)",
   hoverBg: "rgba(0,0,0,0.06)",
 };
@@ -24,7 +20,7 @@ export default function HeaderNav() {
   const [{ y }] = useWindowScroll();
   const scrolled = y > 10;
 
-  // Close on desktop resize; lock page scroll while open
+  // close on desktop resize; lock body scroll while open
   useEffect(() => { if (largerThanSm && opened) close(); }, [largerThanSm, opened, close]);
   useEffect(() => {
     document.body.style.overflow = opened ? "hidden" : "";
@@ -40,26 +36,26 @@ export default function HeaderNav() {
 
   const [hoverKey, setHoverKey] = useState(null);
 
-  // Brand as prominent as your H2
   const brandStyle = {
     textDecoration: "none",
     color: scrolled ? colors.ink : "#fff",
-    fontWeight: 700,
-    fontSize: "clamp(1.6rem, 3.2vw, 2.1rem)",
+    fontWeight: 400, // keep your current weight
+    fontSize: "clamp(1.4rem, 2.6vw, 2rem)", // 2× body max
     lineHeight: 1.1,
+    fontFamily: 'var(--font-main), Georgia, "Times New Roman", Times, serif',
   };
 
-  // Larger desktop links
   const topLink = (href, label, key) => (
     <Link
       key={key}
       href={href}
       style={{
         textDecoration: "none",
-        fontWeight: 700,
+        fontWeight: 400,
         color: scrolled ? colors.ink : "#fff",
         fontSize: "clamp(1.05rem, 2.2vw, 1.25rem)",
         transition: "color 120ms ease",
+        fontFamily: 'var(--font-main), Georgia, "Times New Roman", Times, serif', // ensure same font
       }}
     >
       {label}
@@ -77,13 +73,14 @@ export default function HeaderNav() {
         display: "block",
         textDecoration: "none",
         color: colors.ink,
-        fontWeight: 700,
+        fontWeight: 400,
         textAlign: "right",
         padding: big ? "14px 16px" : "12px 14px",
         borderRadius: 8,
         background: hoverKey === key ? colors.hoverBg : "transparent",
         transition: "background 120ms ease",
         fontSize: big ? "clamp(24px, 3.2vw, 36px)" : "clamp(18px, 2.4vw, 28px)",
+        fontFamily: 'var(--font-main), Georgia, "Times New Roman", Times, serif', // ensure same font
       }}
     >
       {label}
@@ -102,19 +99,24 @@ export default function HeaderNav() {
         borderBottom: scrolled ? `1px solid ${colors.border}` : "1px solid transparent",
         boxShadow: scrolled ? "0 10px 28px rgba(0,0,0,0.12)" : "none",
         transition: "background-color 200ms ease, border-color 200ms ease, box-shadow 200ms ease, backdrop-filter 200ms ease",
+        fontFamily: 'var(--font-main), Georgia, "Times New Roman", Times, serif',
       }}
     >
       <Container size="lg" style={{ padding: "36px 16px" }}>
         <Group justify="space-between" wrap="nowrap">
-          <Link href="/" style={brandStyle}>Photography Portfolio</Link>
+          {/* Title link with two sizes, same font */}
+          <Link href="/" style={brandStyle} aria-label="Home">
+            <span style={{ display: "block" }}>LichtBlicke</span>
+            <span style={{ display: "block", fontSize: "0.62em", fontWeight: 400 }}>
+              von Evi Wendlinger
+            </span>
+          </Link>
 
-          {/* Desktop links */}
           <Group gap="md" visibleFrom="sm">
             {topLink("/portfolio", "Portfolio", "portfolio-top")}
             {topLink("/about", "About", "about-top")}
           </Group>
 
-          {/* Burger (mobile) */}
           <Burger
             opened={opened}
             onClick={toggle}
@@ -126,10 +128,10 @@ export default function HeaderNav() {
         </Group>
       </Container>
 
-      {/* === FULL-PAGE OVERLAY (BLURS HEADER + BODY) + RIGHT-SIDE COLUMN === */}
+      {/* === FULL-PAGE BLUR OVERLAY + RIGHT-SIDE COLUMN (scrollable) === */}
       {opened && (
         <Portal>
-          {/* Overlay: transparent tint + backdrop blur, so the PAGE IS VISIBLE but blurred */}
+          {/* Blur the whole page (header + body) but keep it visible */}
           <div
             onClick={close}
             style={{
@@ -139,10 +141,11 @@ export default function HeaderNav() {
               background: colors.overlayTint,
               backdropFilter: "saturate(140%) blur(10px)",
               WebkitBackdropFilter: "saturate(140%) blur(10px)",
+              overscrollBehavior: "contain",
             }}
           />
 
-          {/* Right column panel ABOVE the overlay, so it’s sharp and clickable */}
+          {/* Right column menu panel */}
           <div
             aria-label="Menu panel"
             onClick={(e) => e.stopPropagation()}
@@ -150,7 +153,7 @@ export default function HeaderNav() {
               position: "fixed",
               top: 0,
               right: 0,
-              height: "100dvh",
+              height: "100svh",
               width: "min(420px, 55vw)",
               zIndex: 2001,
               background: colors.panelGrad,
@@ -159,25 +162,24 @@ export default function HeaderNav() {
               display: "flex",
               flexDirection: "column",
               padding: "18px 16px",
-              // slide-in animation
+              overflowY: "auto",
+              WebkitOverflowScrolling: "touch",
+              overscrollBehavior: "contain",
               transform: "translateX(0)",
               animation: "slideIn 160ms ease",
             }}
           >
-            {/* Top row: label + close button */}
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
               <div style={{ fontWeight: 700, color: colors.ink }}>Menu</div>
               <CloseButton aria-label="Close menu" onClick={close} size="lg" />
             </div>
 
             <nav style={{ width: "100%", marginTop: 4, display: "flex", flex: 1, alignItems: "center" }}>
-              <Stack gap={10} align="flex-end" style={{ width: "100%" }}>
+              <Stack gap={10} align="flex-end" style={{ width: "100%", paddingBottom: 16 }}>
                 {item("/", "Home", "home", true)}
                 {item("/portfolio", "Portfolio", "portfolio", true)}
                 {item("/about", "About", "about", true)}
-
                 <Divider my={12} style={{ borderColor: colors.border, width: "100%" }} />
-
                 {item("/astro", "Astro", "astro")}
                 {item("/natur", "Natur und Landschaft", "natur")}
                 {item("/tiere", "Tiere", "tiere")}
@@ -185,7 +187,6 @@ export default function HeaderNav() {
             </nav>
           </div>
 
-          {/* keyframes for slide-in */}
           <style jsx global>{`
             @keyframes slideIn {
               from { transform: translateX(100%); }

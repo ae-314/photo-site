@@ -7,7 +7,7 @@ export default function HeroImageBackground() {
   return (
     <div className={classes.wrapper} aria-label="Featured photograph">
       {/* subtle darkening helps the transparent header over bright images */}
-      <Overlay color="#000" opacity={0.15} zIndex={1} />
+      {/* <Overlay color="#000" opacity={0.15} zIndex={1} /> */}
       <div className={classes.inner} />
     </div>
   );
