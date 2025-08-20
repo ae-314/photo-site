@@ -11,7 +11,7 @@ export default function HeroImageBackground() {
       {/* <Overlay color="#000" opacity={0.15} zIndex={2} /> */}
 
     <Image
-  src="/hero.avif"
+  src="/hero.webp"
   alt="Featured photograph"
   fill
   priority

@@ -15,7 +15,7 @@ export default function HomePage() {
           <Link href="/astro" className={styles.card}>
             <div className={styles.imageWrap}>
               <Image
-                src="/albums/astro/cover.avif"
+                src="/albums/astro/cover.webp"
                 alt="Astro"
                 fill
                 sizes="(max-width: 480px) 100vw, (max-width: 1024px) 50vw, 33vw"
@@ -29,7 +29,7 @@ export default function HomePage() {
           <Link href="/natur" className={styles.card}>
             <div className={styles.imageWrap}>
               <Image
-                src="/albums/natur/cover.avif"
+                src="/albums/natur/cover.webp"
                 alt="Natur und Landschaft"
                 fill
                 sizes="(max-width: 480px) 100vw, (max-width: 1024px) 50vw, 33vw"
@@ -43,7 +43,7 @@ export default function HomePage() {
           <Link href="/tiere" className={styles.card}>
             <div className={styles.imageWrap}>
               <Image
-                src="/albums/tiere/cover.avif"
+                src="/albums/tiere/cover.webp"
                 alt="Tiere"
                 fill
                 sizes="(max-width: 480px) 100vw, (max-width: 1024px) 50vw, 33vw"
