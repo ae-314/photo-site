@@ -18,9 +18,8 @@ export default function HomePage() {
                 src="/albums/astro/cover.webp"
                 alt="Astro"
                 fill
-                sizes="(max-width: 480px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                sizes="(max-width: 560px) 100vw, (max-width: 900px) 50vw, 33vw"
                 className={styles.coverImg}
-                priority
               />
             </div>
             <div className={styles.title}>Astro</div>
@@ -32,9 +31,8 @@ export default function HomePage() {
                 src="/albums/natur/cover.webp"
                 alt="Natur und Landschaft"
                 fill
-                sizes="(max-width: 480px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                sizes="(max-width: 560px) 100vw, (max-width: 900px) 50vw, 33vw"
                 className={styles.coverImg}
-                priority
               />
             </div>
             <div className={styles.title}>Natur und Landschaft</div>
@@ -46,9 +44,8 @@ export default function HomePage() {
                 src="/albums/tiere/cover.webp"
                 alt="Tiere"
                 fill
-                sizes="(max-width: 480px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                sizes="(max-width: 560px) 100vw, (max-width: 900px) 50vw, 33vw"
                 className={styles.coverImg}
-                priority
               />
             </div>
             <div className={styles.title}>Tiere</div>
