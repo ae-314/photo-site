@@ -24,6 +24,9 @@ export default function HeaderNav() {
   const [{ y }] = useWindowScroll();
   const scrolled = y > 10;
 
+  // CHANGE: track when the header itself is hovered (to apply glass/transparent look on hover)
+  const [headerHovered, setHeaderHovered] = useState(false);
+
   // close on desktop resize; lock body scroll while open
   useEffect(() => { if (largerThanSm && opened) close(); }, [largerThanSm, opened, close]);
   useEffect(() => {
@@ -38,35 +41,59 @@ export default function HeaderNav() {
     return () => window.removeEventListener("keydown", onKey);
   }, [opened, close]);
 
+  // track which top link is hovered for per-link glow
   const [hoverKey, setHoverKey] = useState(null);
 
   const navOnLight = isHome ? scrolled : true; // light text only on home before scroll
 
   const brandStyle = {
     textDecoration: "none",
-    color: navOnLight ? colors.ink : "#fff",
-    fontWeight: 400,
+    color: navOnLight ? colors.ink : "rgba(248, 246, 246, 0.96)",
+    fontWeight: 550,
     fontSize: "clamp(1.4rem, 2.6vw, 2rem)", // 2× body max
     lineHeight: 1.1,
     fontFamily: 'var(--font-main), Georgia, "Times New Roman", Times, serif',
   };
 
-  const topLink = (href, label, key) => (
-    <Link
-      key={key}
-      href={href}
-      style={{
-        textDecoration: "none",
-        fontWeight: 400,
-        color: navOnLight ? colors.ink : "#fff",
-        fontSize: "clamp(1.05rem, 2.2vw, 1.25rem)",
-        transition: "color 120ms ease",
-        fontFamily: 'var(--font-main), Georgia, "Times New Roman", Times, serif',
-      }}
-    >
-      {label}
-    </Link>
-  );
+  // CHANGE: add ringColor that is WHITE on hero, DARK on scroll/inner pages
+  const topLink = (href, label, key) => {
+    const isHover = hoverKey === key;
+    const baseColor  = navOnLight ? colors.ink : "rgba(248, 246, 246, 0.96)";
+    const hoverColor = navOnLight ? colors.ink : "rgba(255, 255, 255, 0.98)";
+    const ringColor  = navOnLight ? "#0E1826" : "rgba(255,255,255,0.95)"; // ← ring switches based on scroll
+    return (
+      <Link
+        key={key}
+        href={href}
+        onMouseEnter={() => setHoverKey(key)}
+        onMouseLeave={() => setHoverKey(null)}
+        onFocus={() => setHoverKey(key)}
+        onBlur={() => setHoverKey(null)}
+        style={{
+          display: "inline-block",
+          textDecoration: "none",
+          fontWeight: 600,
+          color: isHover ? hoverColor : baseColor,
+          fontSize: "clamp(1.05rem, 2.2vw, 1.25rem)",
+          transition: "color 120ms ease, background 150ms ease, box-shadow 150ms ease, text-shadow 150ms ease",
+          fontFamily: 'var(--font-main), Georgia, "Times New Roman", Times, serif',
+          padding: "6px 10px",
+          borderRadius: 8,
+          background: isHover
+            ? (navOnLight ? colors.hoverBg : "rgba(14, 24, 38, 0.21)")
+            : "transparent",
+          // CHANGE: keep ring + stronger glow; ringColor is white on hero, #0E1826 on scroll
+          boxShadow: isHover
+            ? `0 0 0 1px ${ringColor}, 0 0 16px rgba(255,255,255,0.55), 0 0 36px rgba(255,255,255,0.35)`
+            : "0 0 0 1px transparent, 0 0 0 rgba(0,0,0,0)",
+          // subtle text glow so the label "pops"
+          textShadow: isHover ? "0 0 10px rgba(255,255,255,0.45)" : "none",
+        }}
+      >
+        {label}
+      </Link>
+    );
+  };
 
   const item = (href, label, key, big = false) => (
     <Link
@@ -93,19 +120,24 @@ export default function HeaderNav() {
     </Link>
   );
 
+  // compute header visuals; on home, hovering header shows the same glass as scrolling
+  const showGlass = isHome && (scrolled || headerHovered);
+
   return (
     <header
+      onMouseEnter={() => setHeaderHovered(true)}   // CHANGE: trigger glass on hover
+      onMouseLeave={() => setHeaderHovered(false)}  // CHANGE
       style={{
         position: "fixed",
         top: 0, left: 0, right: 0,
         zIndex: 100,
         background: isHome
-          ? (scrolled ? colors.headerGlass : "transparent")
+          ? (showGlass ? colors.headerGlass : "transparent")
           : colors.panelGrad, // solid header on inner pages
-        backdropFilter: isHome && scrolled ? "saturate(140%) blur(10px)" : "none",
-        WebkitBackdropFilter: isHome && scrolled ? "saturate(140%) blur(10px)" : "none",
-        borderBottom: (isHome && !scrolled) ? "1px solid transparent" : `1px solid ${colors.border}`,
-        boxShadow: (isHome && !scrolled) ? "none" : "0 10px 28px rgba(0,0,0,0.12)",
+        backdropFilter: showGlass ? "saturate(140%) blur(10px)" : "none",
+        WebkitBackdropFilter: showGlass ? "saturate(140%) blur(10px)" : "none",
+        borderBottom: (isHome && !showGlass) ? "1px solid transparent" : `1px solid ${colors.border}`,
+        boxShadow: (isHome && !showGlass) ? "none" : "0 10px 28px rgba(0,0,0,0.12)",
         transition: "background-color 200ms ease, border-color 200ms ease, box-shadow 200ms ease, backdrop-filter 200ms ease",
         fontFamily: 'var(--font-main), Georgia, "Times New Roman", Times, serif',
       }}
@@ -201,3 +233,10 @@ export default function HeaderNav() {
     </header>
   );
 }
+
+/*
+CHANGES:
+- Added header hover state to show glass background when hovering (same as scrolling).
+- In topLink: introduced ringColor and updated boxShadow so the ring is WHITE on hero (not scrolled) and #0E1826 on scroll/inner pages, with a strong white glow in both.
+- Kept all your original values and alphas; only added hover/glow behavior and ring color switching.
+*/

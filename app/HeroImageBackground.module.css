@@ -1,13 +1,13 @@
 .wrapper {
   position: relative;
-  height: 100svh; /* mobile-friendly viewport height */
-  overflow: hidden;
+  height: 100svh;           /* mobile-friendly viewport height */
+  overflow: hidden;         /* clip rounded corners / overlays */
 }
 
 /* The optimized image */
 .heroImg {
-  object-fit: cover;       /* same visual fill as background-size: cover */
-  object-position: center; /* default focal point */
+  object-fit: cover;        /* same visual fill as background-size: cover */
+  object-position: center;  /* default focal point */
   z-index: 0;
 }
 
@@ -26,12 +26,28 @@
   pointer-events: none;
   z-index: 1;
   background: linear-gradient(
-  to bottom,
-  rgba(0, 0, 0, 0.35) 0%,
-  rgba(0, 0, 0, 0.32) 10%,
-  rgba(0, 0, 0, 0.10) 22%,
-  rgba(0, 0, 0, 0.00) 30%
-);
+    to bottom,
+    rgba(0, 0, 0, 0.35) 0%,
+    rgba(0, 0, 0, 0.32) 10%,
+    rgba(0, 0, 0, 0.10) 22%,
+    rgba(0, 0, 0, 0.00) 30%
+  );
+}
+
+/* Bottom fade to next section color (#0E1826) */
+.wrapper::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: clamp(120px, 20vh, 220px);
+  pointer-events: none;
+  z-index: 1; /* above image, below .inner */
+  background: linear-gradient(
+    to bottom,
+    rgba(14, 24, 38, 0) 0%,
+    rgba(14, 24, 38, 0.6) 60%,
+    #0E1826 100%
+  );
 }
 
 /* Bias crop to the LEFT on portrait */

@@ -14,7 +14,7 @@ h1, h2, h3 {
   letter-spacing: 0.01em;
 }
 h1 { font-weight: 700; font-size: clamp(2.2rem, 4.5vw, 3.2rem); line-height: 1.15; margin: 0 0 0.5rem; }
-h2 { font-weight: 700; font-size: clamp(1.6rem, 3.2vw, 2.1rem); line-height: 1.25; margin: 0 0 0.5rem; }
+h2 { font-weight: 700; font-size: clamp(1.7rem, 3.5vw, 2.3rem); line-height: 1.25; margin: 0 0 0.5rem; }
 
 /* Optional: code font */
 code, pre {

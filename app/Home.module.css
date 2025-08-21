@@ -1,6 +1,8 @@
 .section {
   padding: clamp(24px, 6vw, 56px) 16px;
   text-align: center;
+  background-color: #0E1826;                /* dark section bg */
+  color: rgba(231, 225, 225, 0.92);         /* light text */
 }
 
 .kicker {
@@ -10,6 +12,7 @@
   font-size: clamp(1.4rem, 3.5vw, 2rem);
   line-height: 1.25;
   letter-spacing: 0.01em;
+  color: rgba(248, 246, 246, 0.96);         /* brighter heading on dark */
 }
 
 .grid {
@@ -30,14 +33,18 @@
 .card {
   display: block;
   text-decoration: none;
-  color: inherit;
-  border-radius: 14px;
+  color: rgba(248, 246, 246, 0.96);         /* white-ish text on dark card */
+  border-radius: 8px;                        /* less rounded */
   overflow: hidden;
-  border: 1px solid rgba(0,0,0,0.14); /* matches colors.border */
-  background: #fff; /* keeps images crisp against page */
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #0E1826;                       /* same as section bg (no white strip) */
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.30);
   transition: transform 150ms ease, box-shadow 150ms ease;
 }
-.card:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0,0,0,0.10); }
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.40);
+}
 
 .imageWrap {
   position: relative;
@@ -52,8 +59,10 @@
 
 .title {
   font-family: var(--font-main), Georgia, "Times New Roman", Times, serif;
-  font-weight: 400; /* not bold */
-  font-size: clamp(1rem, 2.3vw, 1.125rem);
+  font-weight: 600; 
+  font-size: clamp(1.05rem, 2.6vw, 1.2rem);
   padding: 12px 14px 14px;
   text-align: center;
+  color: rgba(242, 238, 238, 0.96);         /* white text */
+  background: transparent;                   /* remove white bar */
 }
