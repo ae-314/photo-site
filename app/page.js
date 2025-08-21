@@ -9,7 +9,7 @@ export default function HomePage() {
       <HeroImageBackground />
 
       <section className={styles.section} aria-label="Portfolio collections">
-        <h2 className={styles.kicker}>View the Portfolio Collection</h2>
+        <h2 className={styles.kicker}>Portfolio entdecken</h2>
 
         <div className={styles.grid}>
           <Link href="/astro" className={styles.card}>

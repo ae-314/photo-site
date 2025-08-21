@@ -8,6 +8,10 @@ body {
   font-family: var(--font-main), Georgia, "Times New Roman", Times, serif;
 }
 
+html { background: #0E1826; }            /* covers iOS/overscroll */
+body { background: #0E1826 !important; } /* wins if something else sets white */
+
+
 /* Headings (Tinos too) */
 h1, h2, h3 {
   font-family: var(--font-main), Georgia, "Times New Roman", Times, serif;

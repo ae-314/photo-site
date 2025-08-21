@@ -35,10 +35,11 @@
   text-decoration: none;
   color: rgba(248, 246, 246, 0.96);         /* white-ish text on dark card */
   border-radius: 8px;                        /* less rounded */
-  overflow: hidden;
+  /* allow image glow to render outside the card */
+  overflow: visible;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  background: #0E1826;                       /* same as section bg (no white strip) */
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.30);
+  background: #0e182600;                     /* same as section bg (no white strip) */
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0);
   transition: transform 150ms ease, box-shadow 150ms ease;
 }
 .card:hover {
@@ -46,10 +47,21 @@
   box-shadow: 0 14px 32px rgba(0, 0, 0, 0.40);
 }
 
+/* Image container (we'll glow this only on hover) */
 .imageWrap {
   position: relative;
   aspect-ratio: 3/2;
-  overflow: hidden;
+  overflow: hidden;                /* keep crop */
+  border-radius: inherit;          /* match card corners */
+  box-shadow: none;                /* default: no glow */
+  transition: box-shadow 150ms ease;
+}
+
+/* SOFT, DIFFUSE CREAM GLOW AROUND IMAGE ONLY (no hard border) */
+.card:hover .imageWrap {
+  box-shadow:
+    0 0 18px rgba(255, 247, 230, 0.28),
+    0 0 44px rgba(255, 247, 230, 0.16);
 }
 
 .coverImg {
@@ -65,4 +77,30 @@
   text-align: center;
   color: rgba(242, 238, 238, 0.96);         /* white text */
   background: transparent;                   /* remove white bar */
+}
+
+/* === MOBILE PORTRAIT (slightly smaller cards/images) === */
+@media (max-width: 560px) and (orientation: portrait) {
+  .section { padding: 16px 12px 28px; }                 /* a bit tighter */
+  .grid {
+    gap: 10px;
+    max-width: 480px;                                    /* don't span full width */
+  }
+  .imageWrap { aspect-ratio: 16/10; }                    /* shorter image (less tall) */
+  .title { font-size: clamp(0.98rem, 3.6vw, 1.08rem); }  /* slightly smaller title */
+}
+
+/* === MOBILE LANDSCAPE (short screens) === */
+@media (orientation: landscape) and (max-height: 420px) {
+  .section { padding: 12px 12px; }
+  .grid {
+    gap: 10px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));    /* 2-up to keep items smaller */
+    max-width: 720px;                                    /* contain width */
+  }
+  .imageWrap { aspect-ratio: 16/9; }                     /* flatter ratio = smaller height */
+  .title {
+    font-size: clamp(0.95rem, 1.6vw, 1.05rem);
+    padding: 10px 12px 12px;
+  }
 }

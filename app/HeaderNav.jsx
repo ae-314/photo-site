@@ -12,7 +12,7 @@ const colors = {
   panelGrad: "linear-gradient(180deg, #f0f0f0 0%, #e6e6e6 100%)", // light smoke grey gradient
   ink: "#000000",
   border: "rgba(0,0,0,0.14)",
-  hoverBg: "rgba(0,0,0,0.06)",
+  hoverBg: "rgba(219, 211, 211, 0.06)",
 };
 
 export default function HeaderNav() {
@@ -24,43 +24,50 @@ export default function HeaderNav() {
   const [{ y }] = useWindowScroll();
   const scrolled = y > 10;
 
-  // CHANGE: track when the header itself is hovered (to apply glass/transparent look on hover)
-  const [headerHovered, setHeaderHovered] = useState(false);
+  // NEW: only treat hover on real hover devices (prevents tap-at-top reveal on mobile)
+  const canHover = useMediaQuery("(hover: hover) and (pointer: fine)");
 
-  // close on desktop resize; lock body scroll while open
+  // NEW: compact header for short/landscape mobile viewports
+  const compactLandscape = useMediaQuery("(max-height: 420px) and (orientation: landscape)");
+
+  const [headerHovered, setHeaderHovered] = useState(false); // (existing behavior)
+
   useEffect(() => { if (largerThanSm && opened) close(); }, [largerThanSm, opened, close]);
   useEffect(() => {
     document.body.style.overflow = opened ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [opened]);
 
-  // ESC to close
   useEffect(() => {
     const onKey = (e) => e.key === "Escape" && close();
     if (opened) window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [opened, close]);
 
-  // track which top link is hovered for per-link glow
   const [hoverKey, setHoverKey] = useState(null);
 
   const navOnLight = isHome ? scrolled : true; // light text only on home before scroll
+
+  // NEW: shrink typography/padding when compactLandscape
+  const brandFontSize = compactLandscape ? "clamp(1.05rem, 2vw, 1.4rem)" : "clamp(1.4rem, 2.6vw, 2rem)";
+  const linkFontSize  = compactLandscape ? "clamp(0.95rem, 1.8vw, 1.05rem)" : "clamp(1.05rem, 2.2vw, 1.25rem)";
+  const headerPad     = compactLandscape ? "18px 12px" : "36px 16px";
+  const burgerSize    = compactLandscape ? "xs" : "sm";
 
   const brandStyle = {
     textDecoration: "none",
     color: navOnLight ? colors.ink : "rgba(248, 246, 246, 0.96)",
     fontWeight: 550,
-    fontSize: "clamp(1.4rem, 2.6vw, 2rem)", // 2× body max
+    fontSize: brandFontSize, // CHANGED
     lineHeight: 1.1,
     fontFamily: 'var(--font-main), Georgia, "Times New Roman", Times, serif',
   };
 
-  // CHANGE: add ringColor that is WHITE on hero, DARK on scroll/inner pages
   const topLink = (href, label, key) => {
     const isHover = hoverKey === key;
     const baseColor  = navOnLight ? colors.ink : "rgba(248, 246, 246, 0.96)";
     const hoverColor = navOnLight ? colors.ink : "rgba(255, 255, 255, 0.98)";
-    const ringColor  = navOnLight ? "#0E1826" : "rgba(255,255,255,0.95)"; // ← ring switches based on scroll
+    const ringColor  = navOnLight ? "#0E1826" : "rgba(255,255,255,0.95)"; // dark on scroll, white on hero
     return (
       <Link
         key={key}
@@ -74,19 +81,17 @@ export default function HeaderNav() {
           textDecoration: "none",
           fontWeight: 600,
           color: isHover ? hoverColor : baseColor,
-          fontSize: "clamp(1.05rem, 2.2vw, 1.25rem)",
+          fontSize: linkFontSize, // CHANGED
           transition: "color 120ms ease, background 150ms ease, box-shadow 150ms ease, text-shadow 150ms ease",
           fontFamily: 'var(--font-main), Georgia, "Times New Roman", Times, serif',
-          padding: "6px 10px",
+          padding: compactLandscape ? "4px 8px" : "6px 10px", // CHANGED
           borderRadius: 8,
           background: isHover
-            ? (navOnLight ? colors.hoverBg : "rgba(14, 24, 38, 0.21)")
+            ? (navOnLight ? colors.hoverBg : "rgba(184, 191, 201, 0.21)")
             : "transparent",
-          // CHANGE: keep ring + stronger glow; ringColor is white on hero, #0E1826 on scroll
           boxShadow: isHover
             ? `0 0 0 1px ${ringColor}, 0 0 16px rgba(255,255,255,0.55), 0 0 36px rgba(255,255,255,0.35)`
             : "0 0 0 1px transparent, 0 0 0 rgba(0,0,0,0)",
-          // subtle text glow so the label "pops"
           textShadow: isHover ? "0 0 10px rgba(255,255,255,0.45)" : "none",
         }}
       >
@@ -120,13 +125,13 @@ export default function HeaderNav() {
     </Link>
   );
 
-  // compute header visuals; on home, hovering header shows the same glass as scrolling
-  const showGlass = isHome && (scrolled || headerHovered);
+  // Only show glass if scrolled OR (device can hover AND header is hovered)
+  const showGlass = isHome && (scrolled || (canHover && headerHovered));
 
   return (
     <header
-      onMouseEnter={() => setHeaderHovered(true)}   // CHANGE: trigger glass on hover
-      onMouseLeave={() => setHeaderHovered(false)}  // CHANGE
+      onMouseEnter={() => setHeaderHovered(true)}
+      onMouseLeave={() => setHeaderHovered(false)}
       style={{
         position: "fixed",
         top: 0, left: 0, right: 0,
@@ -142,7 +147,7 @@ export default function HeaderNav() {
         fontFamily: 'var(--font-main), Georgia, "Times New Roman", Times, serif',
       }}
     >
-      <Container size="lg" style={{ padding: "36px 16px" }}>
+      <Container size="lg" style={{ padding: headerPad /* CHANGED */ }}>
         <Group justify="space-between" wrap="nowrap">
           <Link href="/" style={brandStyle} aria-label="Home">
             <span style={{ display: "block" }}>LichtBlicke</span>
@@ -153,7 +158,7 @@ export default function HeaderNav() {
 
           <Group gap="md" visibleFrom="sm">
             {topLink("/portfolio", "Portfolio", "portfolio-top")}
-            {topLink("/about", "About", "about-top")}
+            {topLink("/about", "Über mich", "about-top")}
           </Group>
 
           <Burger
@@ -161,7 +166,7 @@ export default function HeaderNav() {
             onClick={toggle}
             aria-label="Toggle navigation"
             hiddenFrom="sm"
-            size="sm"
+            size={burgerSize}            // CHANGED
             color={navOnLight ? colors.ink : "#fff"}
           />
         </Group>
@@ -213,7 +218,7 @@ export default function HeaderNav() {
               <Stack gap={10} align="flex-end" style={{ width: "100%", paddingBottom: 16 }}>
                 {item("/", "Home", "home", true)}
                 {item("/portfolio", "Portfolio", "portfolio", true)}
-                {item("/about", "About", "about", true)}
+                {item("/about", "Über mich", "about", true)}
                 <Divider my={12} style={{ borderColor: colors.border, width: "100%" }} />
                 {item("/astro", "Astro", "astro")}
                 {item("/natur", "Natur und Landschaft", "natur")}
@@ -236,7 +241,7 @@ export default function HeaderNav() {
 
 /*
 CHANGES:
-- Added header hover state to show glass background when hovering (same as scrolling).
-- In topLink: introduced ringColor and updated boxShadow so the ring is WHITE on hero (not scrolled) and #0E1826 on scroll/inner pages, with a strong white glow in both.
-- Kept all your original values and alphas; only added hover/glow behavior and ring color switching.
+- Added `canHover` to avoid hover behavior on touch devices.
+- Added `compactLandscape` media query; shrinks brand/link font sizes, header padding, and burger size when (max-height:420px) & landscape.
+- No color/alpha changes; only responsive sizing to free more vertical space.
 */
