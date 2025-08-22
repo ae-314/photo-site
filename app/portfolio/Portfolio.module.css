@@ -1,29 +1,32 @@
-.section {
-  padding: clamp(24px, 6vw, 56px) 16px;
-  text-align: center;
-  background-color: #0E1826;                /* dark section bg */
-  color: rgba(231, 225, 225, 0.92);         /* light text */
+/* Page shell with safe top clearance already agreed */
+.page {
+  padding: clamp(180px, 10vh, 200px) 16px 80px;
+  background: #0E1826;
+  color: rgba(231,225,225,0.92);
+  min-height: 100vh;
+}
+.container { max-width: 1100px; margin: 0 auto; }
+.intro { margin: 0 0 clamp(16px, 2.2vw, 30px); }
+.h1 { color: rgba(248,246,246,0.96); }
+.lead {
+  margin: 0;
+  max-width: 62ch;
+  font-size: clamp(1rem, 2vw, 1.125rem);
+  line-height: 1.6;
+  color: rgba(236,233,233,0.88);
 }
 
-.kicker {
-  margin: 0 0 clamp(18px, 4vw, 28px);
-  font-family: var(--font-main), Georgia, "Times New Roman", Times, serif;
-  font-weight: 400; /* not bold */
-  font-size: clamp(1.4rem, 3.5vw, 2rem);
-  line-height: 1.25;
-  letter-spacing: 0.01em;
-  color: rgba(248, 246, 246, 0.96);         /* brighter heading on dark */
-}
-
+/* === SAME CARD STYLES AS HOME === */
 .grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(12px, 3vw, 24px);
-  max-width: 1100px;
+  gap: clamp(30px, 3vw, 24px);
+  max-width: 900px; /* CHANGED (was 1100px) – makes cards slightly smaller */
   margin: 0 auto;
+  margin-top: clamp(16px, 4vw, 48px);
 }
 
-@media (max-width: 900px) {
+@media (max-width: 980px) {
   .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 560px) {
@@ -50,7 +53,7 @@
 /* Image container (we'll glow this only on hover) */
 .imageWrap {
   position: relative;
-  aspect-ratio: 3/2;
+  aspect-ratio: 3/4;
   overflow: hidden;                /* keep crop */
   border-radius: inherit;          /* match card corners */
   box-shadow: none;                /* default: no glow */
@@ -67,6 +70,7 @@
 .coverImg {
   object-fit: cover;
   object-position: center;
+  zoom: -100%;
 }
 
 .title {
