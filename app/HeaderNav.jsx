@@ -17,7 +17,7 @@ const colors = {
   headerGlass: "rgba(241, 248, 210, 0.13)", // header glass (leave as-is unless you want to change header tone)
   overlayTint: "rgba(14, 24, 38, 0.45)",    // ← smoky dark veil behind the panel (burger overlay)
   panelGlass:  "#5923239e",                  // ← glass color of the slide-out panel
-  panelGrad:   "linear-gradient(180deg, #BF5A50, #0E1826", // used for SOLID inner-page header (not the panel)
+  panelGrad:   "linear-gradient(180deg, #BF5A50, #0e1826d3)", // used for SOLID inner-page header (not the panel)
   ink: "#0a0a0aff",
   border: "rgba(0,0,0,0.14)",
   hoverBg: "rgba(187, 175, 175, 0.35)",
